@@ -4,7 +4,7 @@
 
 * [X] 从头学SpringBoot系列(一) 入门
 * [ ] 从头学SpringBoot系列(二) 启动原理介绍
-* [ ] 从头学SpringBoot系列(三) JavaBeanConfig与配置文件
+* [X] 从头学SpringBoot系列(三) JavaBeanConfig与配置文件
 * [ ] 从头学SpringBoot系列(四) logback配置解析
 * [ ] 从头学SpringBoot系列(五) 自定义starter
 * [ ] 从头学SpringBoot系列(六) 数据库存储之mysql
