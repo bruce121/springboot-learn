@@ -1,5 +1,37 @@
 # 从头学SpringBoot系列(三) JavaBeanConfig与配置篇
-
+目录
+===
+   * [前言](#前言)
+   * [正文](#正文)
+      * [一、传统xml配置bean的方式：](#一传统xml配置bean的方式)
+         * [1.新建Bruce121.java](#1新建bruce121java)
+         * [2.在resources下新建demo-config.xml](#2在resources下新建demo-configxml)
+         * [3.在启动类上添加@ImportResource("classpath:demo-config.xml”)让Springboot加载指定xml文件](#3在启动类上添加importresourceclasspathdemo-configxml让springboot加载指定xml文件)
+         * [4.新建Controller进行测试](#4新建controller进行测试)
+         * [5.访问测试](#5访问测试)
+      * [二、Java Bean配置方式](#二java-bean配置方式)
+         * [1.application.properties中添加配置](#1applicationproperties中添加配置)
+         * [2.在需要的地方使用@Value("${config.name}”)](#2在需要的地方使用valueconfigname)
+         * [3.访问测试](#3访问测试)
+         * [4.快捷绑定多个属性](#4快捷绑定多个属性)
+         * [5.注入到其他Bean中](#5注入到其他bean中)
+         * [6.在controller](#6在controller)
+         * [7.访问测试](#7访问测试)
+      * [三、简单引申一下多数据源如何配置](#三简单引申一下多数据源如何配置)
+         * [1.配置文件添加第二套配置](#1配置文件添加第二套配置)
+         * [2.绑定第二套参数](#2绑定第二套参数)
+         * [3.在BeanConfig中装配第二套参数到到同类的Bean中](#3在beanconfig中装配第二套参数到到同类的bean中)
+         * [4.在controller](#4在controller)
+         * [5.访问测试](#5访问测试-1)
+      * [四、多环境配置](#四多环境配置)
+         * [1.添加多个配置文件](#1添加多个配置文件)
+         * [2.使用@Profile注解指定配置文件](#2使用profile注解指定配置文件)
+         * [3.使用自定义的app.properties配置文件装配bean](#3使用自定义的appproperties配置文件装配bean)
+      * [六、使用命令行启动时的外部配置方式](#六使用命令行启动时的外部配置方式)
+         * [1.打包](#1打包)
+         * [2.进入target目录,使用java -jar 启动SpringBoot项目](#2进入target目录使用java--jar-启动springboot项目)
+         * [3.访问测试](#3访问测试-1)
+      * [七、参数间的相互引用](#七参数间的相互引用)
 ## 前言
    SpringBoot推荐我们使用JavaBean配置的方式来代替xml配置，这篇文章就总结一下JavaBean配置的方式以及SpringBoot配置文件application.properties的使用。
 ## 正文
