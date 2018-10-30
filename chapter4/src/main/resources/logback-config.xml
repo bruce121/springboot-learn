@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--详细配置参见http://logback.qos.ch/manual/configuration.html-->
+<configuration debug="false">
+    <!--
+        引入其他xml文件,如果找不到指定的配置文件，logback会有所警告，可以通过设置optional="true"来忽略警告
+        The contents to include can be referenced as a file, as a resource, or as a URL.
+    -->
+    <include optional="true" resource="console-output.xml"/>
+
+    <!--特殊字母相关的转换器-->
+    <conversionRule conversionWord="clr"
+                    converterClass="org.springframework.boot.logging.logback.ColorConverter"/>
+    <conversionRule conversionWord="wex"
+                    converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter"/>
+    <conversionRule conversionWord="wEx"
+                    converterClass="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter"/>
+
+    <!-- 相当于String key=value; 定义参数，可以使用${key}的方式获得value值 -->
+    <property name="CONSOLE_LOG_PATTERN"
+              value="${CONSOLE_LOG_PATTERN:-%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}"/>
+    <property name="FILE_LOG_PATTERN"
+              value="${FILE_LOG_PATTERN:-%d{yyyy-MM-dd HH:mm:ss.SSS} ${LOG_LEVEL_PATTERN:-%5p} ${PID:- } --- [%t] %-40.40logger{39} : %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}"/>
+
+    <!-- allow logging pattern override -->
+    <include optional="true" resource="logback-logging-pattern-override.xml"/>
+
+    <!-- Logback的appenders详细配置可以查看：https://logback.qos.ch/manual/appenders.html-->
+    <!-- 配置name为console的输出源为ConsoleAppender（输出到控制台） -->
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <!-- 设置该输出源的布局格式 -->
+            <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!--输出到文件,会随着文件大小和时间的变化根据指定的策略对日志进行切分-->
+    <appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!---->
+        <file>logs/spring-boot-study.log</file>
+        <!-- 定义日志文件大小及时间策略 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>logs/spring-boot-study.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <!-- each file should be at most 100MB, keep 60 days worth of history, but at most 20GB -->
+            <!-- 当每个文件的大小达到100MB的时候，会自动生成新的日志文件，日志文件最多保存60天，如果总日志大小超过10G的话，会删除旧的日志-->
+            <maxFileSize>100MB</maxFileSize>
+            <maxHistory>60</maxHistory>
+            <totalSizeCap>10GB</totalSizeCap>
+        </rollingPolicy>
+
+        <encoder>
+            <pattern>Bruce App | ${FILE_LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!--
+        日志不仅仅可以保存在本地，还可以写到远程服务器
+        远程服务器需要安装及配置syslog服务（略）
+    -->
+    <!--<appender name="APP_SYSLOG" class="ch.qos.logback.classic.net.SyslogAppender">-->
+        <!--<syslogHost>${remote_ip}</syslogHost>-->
+        <!--<port>514</port>-->
+        <!--<facility>LOCAL1</facility>-->
+        <!--<suffixPattern>${FILE_LOG_PATTERN}</suffixPattern>-->
+    <!--</appender>-->
+
+    <!--
+        介绍：https://blog.windrunner.me/tool/sentry.html
+        需要使用Sentry的话可以引入面的依赖（略）
+        <dependency>
+            <groupId>io.sentry</groupId>
+            <artifactId>sentry-logback</artifactId>
+            <version>1.7.4</version>
+        </dependency>
+    -->
+    <!--<appender name="SENTRY_COLLECTOR" class="io.sentry.logback.SentryAppender">-->
+        <!--
+            http://logback.qos.ch/manual/filters.html#thresholdFilter
+            一个日志级别的阀值过滤器，只会打印出指定级别及以上的日志（该类的注释中写的）
+            例如指定level为WARN，那么只会打印出WARN和ERROR级别的日志
+        -->
+        <!--<filter class="ch.qos.logback.classic.filter.ThresholdFilter">-->
+            <!--<level>${sentry.level.threshold:-ERROR}</level>-->
+        <!--</filter>-->
+    <!--</appender>-->
+
+    <!-- allow additional logback settings -->
+    <include optional="true" resource="logback-overrides.xml"/>
+
+    <!--
+        logger：日志记录器 有name，level，additivity三个属性
+        name：可以具体到类，也可以具体到包名
+        level：默认info级别
+        ps：name结合level的含义就是某个包（类）里面的日志的输出级别，
+        additivity: 默认true，意思是此logger输出的信息会向 根日志记录器传递（即：root logger）
+        下面的配置：相当于在application.properties中配置 logging.level.com.bruce121.chapter4.controller.DemoController=trace
+    -->
+    <logger name="com.bruce121.chapter4.controller.DemoController" level="trace" additivity="true">
+        <!--
+            触发此logger输出条件的话，会引用哪些appender进行输出
+            例如触发该日志记录器：
+            1.使用该 logger 所引用的console这个appender向控制台输出了日志信息
+            2.再根据 additivity 的属性决定是否向根日志记录器传递
+            3.如果传递给了 root logger，那么直接会使用root logger 所配置的appender进行处理,如果没传递则结束本次日志处理
+            ps:这种日志的传递的特性可以实现不同位置的日志使用不同的策略进行处理
+               但是，一般情况下都只会指定 具体的包（类）的日志级别，然后additivity传递特性默认为true，即自己不操心，让root logger操心去吧～
+        -->
+        <appender-ref ref="console"/>
+    </logger>
+
+    <!-- 配置根日志记录器 -->
+    <root level="info">
+        <!-- 引用上面配置的appender -->
+        <appender-ref ref="console"/>
+        <appender-ref ref="file"/>
+        <!--<appender-ref ref="SENTRY_COLLECTOR"/>-->
+    </root>
+
+</configuration>

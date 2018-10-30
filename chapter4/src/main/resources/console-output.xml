@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<included>
+    <!-- 输出至控制台 -->
+    <appender name="another_file" class="ch.qos.logback.core.FileAppender">
+        <file>logs/another_file.log</file>
+        <encoder>
+            <pattern>%date %level [%thread] %logger{10} [%file:%line] %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <root level="info">
+        <appender-ref ref="another_file" />
+    </root>
+
+</included>
