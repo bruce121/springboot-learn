@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="demoBruce" class="com.bruce121.chapter3.entity.Bruce121">
+        <property name="name" value="Bruce121-xml"/>
+        <property name="website" value="www.bruce121.com xml"/>
+    </bean>
+
+</beans>
