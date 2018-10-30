@@ -265,9 +265,10 @@ public String pringLog(){
 可以发现每一条消息都被打印了2次，但是打开日志文件看一下，却发现只有一次
 ![image](./image/609D71DF-9DC6-4DF8-A17A-C79B5295C644.png)
 具体的解释全在配置文件中。
-#### 3.演示日志切分
+
 **PS**：因为xml的元素加载顺序是从上至下的，所以说在xml下方可以自己添加配置来覆盖上方的配置
 写了一个死循环来打印日志展示日志的切分：
+#### 3.演示日志切分
 ```
 @RestController
 public class LoggerController implements InitializingBean{
