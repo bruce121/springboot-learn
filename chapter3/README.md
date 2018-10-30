@@ -303,13 +303,16 @@ server.port=${WEBAPI_PORT:19083}
  `${WEBAPI_MODE:dev}` 含义是：
  如果`WEBAPI_MODE`这个变量存在，则引用这个变量的值。
  如果`WEBAPI_MODE`不存在，则默认使用`dev`
+ 
 **PS**：因为springboot可以从多处地方读取配置的属性，常用的有如下几种（按优先级排序）
-1.命令行参数 
-2.JVM系统属性 
-3.操作系统环境变量 
-4.application.properties或者application.yml文件
+1. 命令行参数 
+2. JVM系统属性 
+3. 操作系统环境变量 
+4. application.properties或者application.yml文件
 
 这样我们就可以理解为什么`可以使用命令行覆盖配置文件中配置的属性`了，因为`命令行中的参数优先级最高`，然后这样也可以自行实现外部配置属性，只要`程序启动后先把某些配置加载到系统环境变量中`就可以了。
+
 **PS2**:完整的读取参数的优先级可以参照官方文档（没必要全列一边，需要的时候去官方文档查一查，什么都有了）
+
 文档链接：[https://docs.spring.io/spring-boot/docs/1.5.16.RELEASE/reference/htmlsingle/#boot-features-external-config](https://docs.spring.io/spring-boot/docs/1.5.16.RELEASE/reference/htmlsingle/#boot-features-external-config)
 ![image](./image/84DD473A-7B1C-44D8-B3A4-713ACECC7319.png)
