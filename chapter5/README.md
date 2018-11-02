@@ -430,6 +430,7 @@ public JdbcTemplate jdbcTemplate() throws Exception{
 ##### c.打断点查看效果
 重新启动项目，在UserDao中打一个断点，然后查看JdbcTemplate中的数据源，可以发现使用的是Druid的数据源。
 ![image](./image/8CE6F2E5-298A-46A5-B5EF-F0C1B5F76A95.png)
+
 ### 四、使用多数据源
 在不同的业务场景中，有时候需要向不同数据源进行操作，例如向不同的数据源存储不同的信息，这里模拟一下多数据源如何配置。
 思路：`因为数据源可以自定义，那么就自定义多个数据源，然后构建使用不同数据源的JdbcTemplate`。
