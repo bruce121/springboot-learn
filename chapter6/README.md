@@ -181,7 +181,7 @@ github链接：[https://github.com/Swagger2Markup](https://github.com/Swagger2Ma
     </configuration>
 </plugin>
 ```
-**PS:**插件引入之后可以在idea的侧边栏看到刚才引入的插件，并且双击即可直接执行该插件。
+**PS**：插件引入之后可以在idea的侧边栏看到刚才引入的插件，并且双击即可直接执行该插件。
 
 ![image](./image/2FE6874F-35E3-4868-9224-942FD72A3CD6.png)
 
