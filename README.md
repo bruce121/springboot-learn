@@ -7,7 +7,7 @@
 * [X] 从头学SpringBoot系列(三) JavaBeanConfig与配置文件
 * [X] 从头学SpringBoot系列(四) logback配置解析
 * [X] 从头学SpringBoot系列(五) SQL数据库存储之mysql及多数据源配置解析
-* [ ] 从头学SpringBoot系列(六) Swagger-UI整合
+* [X] 从头学SpringBoot系列(六) 整合Swagger-UI | 生成在线/离线html文档
 * [ ] 从头学SpringBoot系列(七) 自定义starter
 * [ ] 从头学SpringBoot系列(八) 单元测试
 * [ ] 从头学SpringBoot系列(九) 参数验证篇
