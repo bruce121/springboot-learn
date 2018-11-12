@@ -156,7 +156,7 @@ public class User implements Serializable{
 	<artifactId>spring-boot-starter-jdbc</artifactId>
 </dependency>
 ```
-这里我们先看文档，打开前言里面贴的链接，然后搜索SQL，可以直接定位到目录29，直接点进去去看正文（看不懂引文可以硬看，利用好谷歌翻译，慢慢的能看懂的就多了，我现在也只能一半一半）
+这里我们先看文档，打开前言里面贴的链接，然后搜索SQL，可以直接定位到目录29，直接点进去去看正文（看不懂英文可以硬看，利用好谷歌翻译，慢慢的能看懂的就多了，我现在也只能一半一半）
 ![image](./image/9FBFDA13-B4C8-47E7-8EFC-793FA2A61638.png)
 其中讲述了支持很多种数据库，然后如何配置数据源，以及选择数据源指定实现的方法，从这里也可以看出来，spring-boot-starter-jdbc默认使用的是tomcat-jdbc，也就是选择算法中的第一项。
 ![image](./image/22ADEF5C-D539-4430-B331-1565BA2C9296.png )
@@ -386,7 +386,7 @@ spring-boot-autoconfigure jar包下的org.springframework.boot.autoconfigure.jdb
 #### 2.构造自定义数据源
 ![image](./image/31C14427-AD0B-46EB-B9B7-C7F36AF42F52.png)
 都是官方的文档，自己翻译一下就可以了解很多，`简单讲就是自己写一个DataSource配置bean`。
-实操一下，在这里我们引入其他数据源，使用阿里巴巴的德鲁伊durid，阿里爸爸大法好！
+实操一下，在这里我们引入其他数据源，使用阿里巴巴的德鲁伊druid，阿里爸爸大法好！
 
 durid的github地址:[https://github.com/alibaba/druid](https://github.com/alibaba/druid)
 ##### a.pom导入依赖及配置
@@ -430,6 +430,7 @@ public JdbcTemplate jdbcTemplate() throws Exception{
 ##### c.打断点查看效果
 重新启动项目，在UserDao中打一个断点，然后查看JdbcTemplate中的数据源，可以发现使用的是Druid的数据源。
 ![image](./image/8CE6F2E5-298A-46A5-B5EF-F0C1B5F76A95.png)
+
 ### 四、使用多数据源
 在不同的业务场景中，有时候需要向不同数据源进行操作，例如向不同的数据源存储不同的信息，这里模拟一下多数据源如何配置。
 思路：`因为数据源可以自定义，那么就自定义多个数据源，然后构建使用不同数据源的JdbcTemplate`。
