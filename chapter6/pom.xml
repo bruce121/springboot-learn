@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.bruce121</groupId>
+    <artifactId>chapter6</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <name>chapter6</name>
+    <description>Demo project for Spring Boot</description>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>1.5.16.RELEASE</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <java.version>1.8</java.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jdbc</artifactId>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.alibaba/druid -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid</artifactId>
+            <version>1.1.12</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+            <version>2.6.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+            <version>2.6.1</version>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+
+            <!--http://swagger2markup.github.io/swagger2markup/1.3.3/#_maven_plugin-->
+            <plugin>
+                <groupId>io.github.swagger2markup</groupId>
+                <artifactId>swagger2markup-maven-plugin</artifactId>
+                <version>1.3.6</version>
+                <configuration>
+                    <!--
+                        The URL or file path to the Swagger specification
+                        注意：如果在Swagger的bean配置的时候，使用了分组配置的话，那么只访问http：//localhost:8080/v2/api-docs得不到任何内容，需要在后面通过group指定分组
+                        <swaggerInput>http://localhost:8080/v2/api-docs?group=show-swagger-ui</swaggerInput>
+                    -->
+                    <swaggerInput>http://localhost:8080/v2/api-docs</swaggerInput>
+                    <!--The directory where the output should be stored.-->
+                    <!--dir 文件夹，会生成4个文件-->
+                    <!--<outputDir>src/docs/asciidoc/swagger</outputDir>-->
+                    <!--file 文件，会生成1整个文件-->
+                    <outputFile>src/docs/asciidoc/swagger</outputFile>
+                    <config>
+                        <swagger2markup.markupLanguage>ASCIIDOC</swagger2markup.markupLanguage>
+                    </config>
+                </configuration>
+            </plugin>
+
+            <!--https://github.com/asciidoctor/asciidoctor-maven-plugin-->
+            <plugin>
+                <groupId>org.asciidoctor</groupId>
+                <artifactId>asciidoctor-maven-plugin</artifactId>
+                <version>1.5.7.1</version>
+
+                <configuration>
+                    <!--指定asciidoc文档所在目录-->
+                    <!--<sourceDirectory>src/docs/asciidoc/swagger</sourceDirectory>-->
+                    <sourceDirectory>src/docs/asciidoc</sourceDirectory>
+                    <!--html生成后所在的路径-->
+                    <!--<outputDirectory>src/docs/swagger/html</outputDirectory>-->
+                    <outputDirectory>src/docs/</outputDirectory>
+                    <!--默认是docbook，改为html5-->
+                    <backend>html5</backend>
+                    <!--启用语法高亮，设置语法高亮器（当前仅支持 coderay 和 highlight.js）-->
+                    <sourceHighlighter>coderay</sourceHighlighter>
+                    <!--包含传递给 Asciidoctor 的属性的 Map<String,Object>，默认为 null-->
+                    <attributes>
+                        <toc>left</toc>
+                    </attributes>
+                </configuration>
+            </plugin>
+
+        </plugins>
+    </build>
+
+
+</project>
