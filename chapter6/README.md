@@ -1,20 +1,22 @@
 # 从头学SpringBoot系列(六) 整合Swagger-UI | 生成在线/离线html文档
 ## 目录
-* [从头学SpringBoot系列(六) 整合Swagger-UI | 生成离线html文档](#从头学springboot系列六-整合swagger-ui--生成离线html文档)
-   * [目录](#目录)
-   * [前言](#前言)
-   * [正文](#正文)
-      * [一 生成在线Restful-API文档](#一-生成在线restful-api文档)
-         * [1 首先导入swagger-ui的pom依赖](#1-首先导入swagger-ui的pom依赖)
-         * [2 定义Swagger的Bean配置](#2-定义swagger的bean配置)
-         * [3 使用Swagger相关的注解标识接口](#3-使用swagger相关的注解标识接口)
-         * [4 访问测试 <a href="http://localhost:8080/swagger-ui.html#/" rel="nofollow">http://localhost:8080/swagger-ui.html#/</a>](#4-访问测试-httplocalhost8080swagger-uihtml)
-      * [二、生成离线html文档](#二生成离线html文档)
-         * [1.先看效果图](#1先看效果图)
-         * [2.添加swagger2markup插件](#2添加swagger2markup插件)
-         * [3.运行插件](#3运行插件)
-         * [4.添加asciidoctor-maven-plugin插件](#4添加asciidoctor-maven-plugin插件)
-         * [5.查看生成的文件](#5查看生成的文件)
+  * [目录](#目录)
+  * [前言](#前言)
+  * [正文](#正文)
+     * [一 生成在线Restful-API文档](#一-生成在线restful-api文档)
+        * [1 首先导入swagger-ui的pom依赖](#1-首先导入swagger-ui的pom依赖)
+        * [2 定义Swagger的Bean配置](#2-定义swagger的bean配置)
+        * [3 使用Swagger相关的注解标识接口](#3-使用swagger相关的注解标识接口)
+        * [4 访问测试 <a href="http://localhost:8080/swagger-ui.html#/" rel="nofollow">http://localhost:8080/swagger-ui.html#/</a>](#4-访问测试-httplocalhost8080swagger-uihtml)
+     * [二、生成离线html文档](#二生成离线html文档)
+        * [1.先看效果图](#1先看效果图)
+        * [2.添加swagger2markup插件](#2添加swagger2markup插件)
+        * [3.运行插件](#3运行插件)
+        * [4.添加asciidoctor-maven-plugin插件](#4添加asciidoctor-maven-plugin插件)
+        * [5.查看生成的文件](#5查看生成的文件)
+     * [三 控制swagger-ui是否启用](#三-控制swagger-ui是否启用)
+        * [1 添加条件注解及相关配置](#1-添加条件注解及相关配置)
+        * [2 处理静态资源](#2-处理静态资源)
 ## 前言
 在前一篇讲`<SQL数据库存储之mysql及多数据源配置解析>`的时候，我们进行访问测试的工具是Postman，可能有人对postman的使用不是很熟，关于`postMan的使用技巧`以后有时间会整理出一篇文章和大家分享一下。       
 在项目开发过程中，接口开发完成后，如何准确、高效的和前端小伙伴进行联调，也有很多方案。     
@@ -303,9 +305,10 @@ swagger2markup插件配置：
 
 打开swagger.html看一下效果 
 
-![image](./image/69DB6E8D-689D-47D8-8B48-2020ED844ED7.png)
+![image](./image/69DB6E8D-689D-47D8-8B48-2020ED844ED7.png)      
 
-##### **PS1**:这个版本的swagger-ui界面看起来一点都不美观，个人更喜欢`2.6.1`这个版本样式的界面。
+### 三 控制swagger-ui是否启用
+**ps1** 这个版本的swagger-ui界面看起来一点都不美观，个人更喜欢`2.6.1`这个版本样式的界面。
 简洁大方
 
 ![image](./image/1CDA1160-21C8-4224-85FF-9DA9CEEA9D7B.png)
@@ -324,7 +327,8 @@ swagger2markup插件配置：
 然后在这里找到了解决方案：[https://github.com/springfox/springfox/issues/1996](https://github.com/springfox/springfox/issues/1996)       
 igor-holly讲到的清楚浏览器缓存。。。问题解决
 
-##### **PS2**:一般情况下，我们只希望在本地和测试环境可以使用swagger-ui进行访问测试，而预生产及生产环境不允许访问，这个小需求我们可以通过条件注解来解决：      
+一般情况下，我们只希望在本地和测试环境可以使用swagger-ui进行访问测试，而预生产及生产环境不允许访问，这个小需求我们可以通过条件注解来解决： 
+#### 1 添加条件注解及相关配置 
 修改`SwaggerConfig.java` 添加条件注解`@ConditionalOnProperty`
 ```
 @ConditionalOnProperty(
@@ -336,3 +340,78 @@ public class SwaggerConfig {...}
 ```
 然后只有在配置文件中配置了`configs.com.bruce121.swagger-ui.enabled=true`才会构建这个SwaggerBean        
 这样一来就可以通过这个配置来控制是否构造Swagger的Bean，间接控制是否可以通过swagger访问接口。
+但是这样一来依然存在问题，继续访问一下这个页面看一下：
+
+![image](./image/4262C071-36B4-4434-9E1C-2BC6A190080C.png)      
+
+那么下一步要解决的问题就是：不开启swagger-ui就不加载swagger相关静态资源。
+
+#### 2 处理静态资源
+通过自定义WebMvc相关配置进行实现，首先自定义配置类`WebMvcConfiguration`，通过继承`WebMvcConfigurerAdapter`，然后针对自己需要的部分进行override。
+```
+/**
+ * Author: Bruce121
+ * Date: 2018-11-20
+ */
+@Configuration
+public class WebMvcConfiguration extends WebMvcConfigurerAdapter {
+
+    @Value("${configs.com.bruce121.swagger-ui.enabled}")
+    private boolean swaggerEnabled;
+
+    /**
+     * Add handlers to serve static resources such as images, js, and, css
+     * files from specific locations under web application root, the classpath,
+     * and others.
+     */
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        if (swaggerEnabled) {
+            registry.addResourceHandler("swagger-ui.html")
+                    .addResourceLocations("classpath:/META-INF/resources/");
+
+            registry.addResourceHandler("/webjars/**")
+                    .addResourceLocations("classpath:/META-INF/resources/webjars/");
+        }
+    }
+
+}
+```
+这样一来就可以通过自定义配置来决定对swagger相关静态资源的加载了，信心满满，重试一下发现修改无效。
+接着对代码进行debug，可以看到，在`WebMvcConfigurerComposite`这个类中，这里对所有实现了`WebMvcConfigurer`接口的类进行了遍历操作，然后又顺藤摸瓜找到`this.delegates`初始化的细节，发现这里面加载了2个WebMvcConfigurer
+
+![image](./image/E21FBB6D-3BDD-40EC-AE23-8DA2E8EC315E.png)      
+
+![image](./image/317BC1A9-CF9B-430B-A13F-D6AEF876B35B.png)      
+
+而我们自己只定义了一个，那么另一个应该就是默认加载的，打开默认加载的`WebMvcAutoConfiguration`这个类进行查看
+
+![image](./image/92BBCFAE-87E8-4214-83C8-1C267A6CB93A.png)      
+
+果然，默认情况下这个类已经对静态资源做了处理，就是这个原因导致我们自己的配置无效，所以现在的一个解决思路就是禁用掉默认的资源处理，而框架也给我们提供了禁用掉的方法
+通过这段代码可以看到这里是否进行默认处理是由下面这个判断决定，如果条件成立，直接return
+```
+if (!this.resourceProperties.isAddMappings()) {
+	logger.debug("Default resource handling disabled");
+	return;
+}
+```
+继续查看这个条件参数的来历，发现是通过ResourceProperties的addMappings来控制的，然后由这个`@ConfigurationProperties`注解我们知道可以通过配置`spring.resources.addMappings`来覆盖这个值,进而起到取消默认资源处理的效果。
+```
+@ConfigurationProperties(prefix = "spring.resources", ignoreUnknownFields = false)
+public class ResourceProperties implements ResourceLoaderAware, InitializingBean {
+    ...
+    /**
+     * Enable default resource handling.
+    */
+    private boolean addMappings = true;
+    ...
+}
+```
+添加配置文件
+```
+spring.resources.add-mappings=false
+```
+重新启动，尝试访问[http://localhost:8081/swagger-ui.html](http://localhost:8081/swagger-ui.html)发现已经无法访问，起到了预期的控制效果。 
+
+![image](./image/A64AE10E-064F-48CA-9B6F-E8987A3761A3.png)
