@@ -26,10 +26,12 @@
 ## 前言
 这一章来自定义一个starter，实现ActiveMQ的自动配置，经过本章，就可以基本了解springboot的配置原理了，这也是第2章启动原理迟迟没写的原因之一，当有了实际的starter开发案例之后，回过头在去理解springBoot的启动原理就更加清晰明了了。
 
-首先简单介绍一下实现过程，我们的项目启动是依赖`SpringApplication.run(XXX.class, args);`这行命令, 该命令执行后会在项目初始化的过程中，会使用SpringFactoriesLoader这个类加载器扫描所有jar包下的`META-INF/spring.factories`这个文件，然后根据里面的内容，配置加载我们指定的AutoConfigure类   
+首先简单介绍一下实现过程，我们的项目启动是依赖`SpringApplication.run(XXX.class, args);`这行命令, 该命令执行后会在SpringApplication初始化之后，执行run()的过程中，会使用`SpringFactoriesLoader`这个类加载器扫描所有jar包下的`META-INF/spring.factories`这个文件，然后根据里面的内容，配置加载我们指定的AutoConfigure类.   
 例如：     
 `org.springframework.boot.autoconfigure.EnableAutoConfiguration=com.bruce121.autoconfigure.MyActivemqAutoConfiguration`     
-意味着告诉springboot加载我们的指定的`MyActivemqAutoConfiguration`这个类，然后这个类会实现相应的自动配置并将Bean注入Spring Context上下文之中。     
+意味着告诉springboot加载我们的指定的`MyActivemqAutoConfiguration`这个类，然后这个类会实现相应的自动配置并将Bean注入Spring Context上下文之中。   
+
+<div align="left"><img width="800" height="" src="./image/E35CA57D-BCBD-41A2-95A5-46141EACD678.png"/></div>  
 
 自定义starter有2种玩法，一种是分2个模块创建，即一个auto-configure模块，一个starter模块，这种创建的好处是可以单独引入auto-configure模块，然后只有对应的starter模块引入之后才会满足该模块自动配置的条件，触发自动配置。
 另一种就是把2个模块合二为一，只创建一个模块，这种创建的好处是不用考虑那么多，直接导入starter就可以使用（我们采用的就是这种）。
